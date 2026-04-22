@@ -1,0 +1,29 @@
+# Core
+sentence-transformers>=2.5.0
+qdrant-client>=1.8.0
+confluent-kafka>=2.3.0
+
+# LLM
+aiohttp>=3.9.0
+tiktoken>=0.6.0
+
+# Data Processing
+pymupdf>=1.23.0
+
+# AI Pipeline
+langgraph>=0.0.50
+langchain-core>=0.1.27
+
+# Observability
+langfuse>=2.0.0
+
+# Utils
+rich>=13.7.0
+python-dotenv>=1.0.0
+
+# Caching
+upstash-redis>=1.0.0
+
+# Data & Fine-tuning
+datasets>=2.18.0
+huggingface_hub>=0.21.0

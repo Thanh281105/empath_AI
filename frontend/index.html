@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta name="description" content="EmpathAI - Chuyển hóa phàn nàn thành sự hài lòng bằng Trí thông minh cảm xúc"/>
+    <title>EmpathAI - Customer Service AI</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright":"#2b2420","on-secondary-container":"#ffe0cc","secondary-container":"#be5016",
+              "inverse-primary":"#c45b00","tertiary":"#ffcf8c","outline":"#887870","tertiary-dim":"#edb040",
+              "on-surface-variant":"#bfa69a","error-container":"#9f0519","surface-tint":"#ff9f6e",
+              "on-surface":"#fae4e1","background":"#1a0e0a","secondary":"#ffb88c",
+              "on-primary-fixed-variant":"#622a00","primary-fixed-dim":"#ff8753","on-secondary-fixed":"#9b4000",
+              "outline-variant":"#594334","surface-container-low":"#231310","surface":"#1a0e0a",
+              "on-error-container":"#ffa8a3","tertiary-fixed-dim":"#edb040","on-error":"#490006",
+              "primary-dim":"#ff9c69","surface-container-highest":"#3b251e","error":"#ff716c",
+              "on-primary-fixed":"#000000","on-primary":"#662c00","inverse-surface":"#fff8f5",
+              "on-primary-container":"#501f00","primary-container":"#ff9f6e","tertiary-container":"#fcd84e",
+              "surface-variant":"#3b251e","surface-container-lowest":"#0a0000",
+              "on-tertiary-fixed-variant":"#645500","surface-container-high":"#331f18",
+              "secondary-fixed":"#ffe0cc","primary-fixed":"#ff9f6e","on-tertiary":"#645400",
+              "on-background":"#fae4e1","error-dim":"#d7383b","inverse-on-surface":"#665450",
+              "on-tertiary-fixed":"#403600","surface-dim":"#1a0e0a","tertiary-fixed":"#fcd84e",
+              "secondary-dim":"#ef7540","on-secondary":"#672800","surface-container":"#2b1913",
+              "on-secondary-fixed-variant":"#c85f28","primary":"#ff9f6e","secondary-fixed-dim":"#ffceb9",
+              "on-tertiary-container":"#584b00"
+            },
+            fontFamily: { headline:["Inter"], body:["Inter"], label:["Inter"] }
+          }
+        }
+      }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-panel { background: rgba(43,25,19,0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .glass { background: rgba(59,37,30,0.4); backdrop-filter: blur(16px); }
+        .intelligence-pulse { position:absolute; top:0; left:0; width:100%; height:2px; background:linear-gradient(90deg,transparent,#ffcf8c,transparent); opacity:0.6; }
+        body { font-family:'Inter',sans-serif; background-color:#1a0e0a; color:#fae4e1; }
+        .no-scrollbar::-webkit-scrollbar { display:none; }
+        .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+        .session-item:hover .session-delete { opacity:1; }
+        .session-delete { opacity:0; transition:opacity 0.2s; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden bg-background">
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside id="sidebar" class="hidden lg:flex flex-col h-screen w-64 border-r border-[#594334]/15 bg-[#231310] transition-all duration-300">
+    <div class="p-6">
+        <div class="flex items-center gap-3 mb-8">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#ff9f6e] to-[#ffb88c] flex items-center justify-center shadow-lg">
+                <span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings:'FILL' 1;">psychology</span>
+            </div>
+            <div>
+                <h2 class="text-lg font-black text-[#ff9f6e] tracking-tight">EmpathAI</h2>
+                <p class="text-[10px] uppercase tracking-widest text-[#bfa69a]">Emotion Intelligence CSKH</p>
+            </div>
+        </div>
+        <nav class="space-y-1">
+            <button onclick="newResearch()" class="w-full flex items-center gap-3 px-4 py-3 text-[#bfa69a] hover:text-white hover:bg-[#2b1913] rounded-xl transition-all text-sm font-medium">
+                <span class="material-symbols-outlined">add_circle</span> Cuộc hội thoại mới
+            </button>
+            <button onclick="toggleHistoryPanel()" id="btnChatHistory" class="w-full flex items-center gap-3 px-4 py-3 text-[#bfa69a] hover:text-white hover:bg-[#2b1913] transition-all text-sm font-medium">
+                <span class="material-symbols-outlined">forum</span> Lịch sử
+            </button>
+        </nav>
+        <!-- Session List -->
+        <div id="sessionList" class="mt-4 space-y-1 overflow-y-auto max-h-[45vh] no-scrollbar">
+            <p class="px-4 text-[11px] font-bold text-on-surface-variant/50 tracking-tighter uppercase mb-2">Recent Sessions</p>
+        </div>
+    </div>
+    <div class="mt-auto p-6 space-y-1 border-t border-[#594334]/10">
+        <div class="mb-4 px-4 py-2 rounded-lg bg-[#3b251e]/30 border border-[#594334]/15">
+            <p class="text-[11px] text-[#ffcf8c] font-bold uppercase tracking-wider">Empathy Mode Active</p>
+        </div>
+        <a class="flex items-center gap-3 px-4 py-3 text-[#bfa69a] hover:text-white hover:bg-[#2b1913] transition-all text-sm font-medium" href="#">
+            <span class="material-symbols-outlined">settings</span> Cài đặt
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-[#bfa69a] hover:text-white hover:bg-[#2b1913] transition-all text-sm font-medium" href="#">
+            <span class="material-symbols-outlined">help</span> Hỗ trợ
+        </a>
+    </div>
+</aside>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<main class="flex-1 flex flex-col relative overflow-hidden">
+    <!-- Top Nav -->
+    <header class="fixed top-0 w-full z-50 bg-[#1a0e0a]/80 backdrop-blur-xl flex justify-between items-center px-6 h-16 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
+        <div class="flex items-center gap-4">
+            <span class="text-xl font-bold bg-gradient-to-r from-[#ff9f6e] to-[#ffb88c] bg-clip-text text-transparent font-['Inter'] tracking-tight">EmpathAI</span>
+            <div id="topNavStatus" class="hidden md:flex items-center gap-1 bg-surface-container rounded-full px-3 py-1.5 ml-2">
+                <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+                <span class="text-[10px] font-bold text-tertiary tracking-wide uppercase">System Online</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <button class="p-2 text-[#a6aabf] hover:bg-[#1e253b]/50 transition-colors rounded-lg active:scale-95 duration-200">
+                <span class="material-symbols-outlined">history</span>
+            </button>
+            <button class="p-2 text-[#a6aabf] hover:bg-[#1e253b]/50 transition-colors rounded-lg active:scale-95 duration-200">
+                <span class="material-symbols-outlined">info</span>
+            </button>
+            <button class="p-2 text-[#a6aabf] hover:bg-[#1e253b]/50 transition-colors rounded-lg active:scale-95 duration-200">
+                <span class="material-symbols-outlined">settings</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Content Canvas -->
+    <div id="chatCanvas" class="flex-1 overflow-y-auto pt-24 pb-36 px-6 no-scrollbar">
+        <div class="max-w-5xl mx-auto space-y-12">
+
+            <!-- ═══ WELCOME VIEW ═══ -->
+            <div id="welcomeView">
+                <section class="text-center space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3b251e]/50 border border-[#594334]/20">
+                        <span class="w-2 h-2 rounded-full bg-[#ffcf8c] animate-pulse"></span>
+                        <span class="text-[10px] font-bold text-[#ffcf8c] tracking-widest uppercase">Empathy Mode Active</span>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-[#fae4e1]">
+                        Xin chào, mình là <span class="bg-gradient-to-r from-[#ff9f6e] to-[#ffb88c] bg-clip-text text-transparent">EmpathAI</span>
+                    </h1>
+                    <p class="text-[#bfa69a] max-w-2xl mx-auto text-lg leading-relaxed">
+                        Trợ lý CSKH thấu cảm — Chuyển hóa phàn nàn thành sự hài lòng bằng Trí thông minh cảm xúc. Hãy kể mình nghe bạn đang gặp vấn đề gì nhé!
+                    </p>
+                </section>
+
+                <!-- Bento Grid Feature Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mt-12">
+                    <div class="md:col-span-8 group relative glass-panel rounded-2xl p-8 border border-[#594334]/10 hover:border-[#ff9f6e]/30 transition-all overflow-hidden">
+                        <div class="intelligence-pulse opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="flex items-start justify-between">
+                            <div class="space-y-2">
+                                <h3 class="text-2xl font-bold text-[#fae4e1]">Thấu Cảm Thật Sự</h3>
+                                <p class="text-[#bfa69a] leading-relaxed">Không dùng văn mẫu. EmpathAI thấu hiểu cảm xúc và phản hồi như người thật, giúp bạn cảm thấy được lắng nghe.</p>
+                            </div>
+                            <span class="material-symbols-outlined text-[#ff9f6e] text-4xl">favorite</span>
+                        </div>
+                    </div>
+                    <div class="md:col-span-4 group glass-panel rounded-2xl p-8 border border-[#594334]/10 hover:border-[#ff9f6e]/30 transition-all flex flex-col justify-between gap-6">
+                        <span class="material-symbols-outlined text-[#ffb88c] text-4xl">bolt</span>
+                        <div class="space-y-2">
+                            <h3 class="text-xl font-bold text-[#fae4e1]">Phản Hồi Tức Thì</h3>
+                            <p class="text-sm text-[#bfa69a]">Streaming real-time, không phải chờ đợi. Cảm xúc của bạn được xử lý ngay lập tức.</p>
+                        </div>
+                    </div>
+                    <div class="md:col-span-4 group glass-panel rounded-2xl p-8 border border-[#594334]/10 hover:border-[#ff9f6e]/30 transition-all flex flex-col justify-between gap-6">
+                        <span class="material-symbols-outlined text-[#ffcf8c] text-4xl">policy</span>
+                        <div class="space-y-2">
+                            <h3 class="text-xl font-bold text-[#fae4e1]">Nhượng Bộ Thông Minh</h3>
+                            <p class="text-sm text-[#bfa69a]">Tra cứu chính sách tự động, đề xuất bồi thường cụ thể với hạn mức rõ ràng.</p>
+                        </div>
+                    </div>
+                    <div class="md:col-span-8 group relative glass-panel rounded-2xl p-8 border border-[#594334]/10 hover:border-[#ff9f6e]/30 transition-all overflow-hidden">
+                        <div class="flex items-center justify-between gap-8 h-full">
+                            <div class="space-y-4 max-w-md">
+                                <h3 class="text-2xl font-bold text-[#fae4e1]">LangGraph + Fine-tuned LLM</h3>
+                                <p class="text-[#bfa69a]">Hệ thống Agentic RAG thông minh: Phân tích cảm xúc -> Tìm chính sách -> Phản hồi thấu cảm -> Kiểm tra chất lượng.</p>
+                                <div class="flex gap-2">
+                                    <span class="px-3 py-1 rounded-full bg-[#ff9f6e]/10 text-[#ff9f6e] text-[10px] font-bold uppercase tracking-wider">Sentiment Analysis</span>
+                                    <span class="px-3 py-1 rounded-full bg-[#ffb88c]/10 text-[#ffb88c] text-[10px] font-bold uppercase tracking-wider">Empathy Quality Check</span>
+                                </div>
+                            </div>
+                            <div class="hidden sm:flex w-24 h-24 items-center justify-center">
+                                <span class="material-symbols-outlined text-[#ff9f6e] text-6xl" style="font-variation-settings:'FILL' 1;">psychology</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ MESSAGES AREA (Hidden until first message) ═══ -->
+            <div id="messagesArea" class="hidden space-y-8"></div>
+
+        </div>
+    </div>
+
+    <!-- ═══ BOTTOM INPUT BAR ═══ -->
+    <div class="fixed bottom-0 left-0 w-full flex justify-center pb-6 px-4 z-50">
+        <div class="w-full max-w-4xl bg-[#3b251e]/60 backdrop-blur-2xl rounded-2xl border border-[#594334]/15 shadow-2xl transition-all focus-within:ring-1 focus-within:ring-[#ff9f6e]/40">
+            <form id="queryForm" onsubmit="handleSubmit(event)" class="p-2 flex items-center gap-3">
+                <div class="flex-1 px-4 py-3">
+                    <input id="queryInput" class="w-full bg-transparent border-none text-[#fae4e1] placeholder-[#bfa69a] focus:ring-0 focus:outline-none font-['Inter'] text-sm" placeholder="Kể mình nghe bạn đang gặp vấn đề gì..." type="text" autofocus/>
+                </div>
+                <div class="flex items-center gap-2 pr-2">
+                    <button type="submit" id="submitBtn" class="w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-[#ff9f6e] to-[#ff8753] text-[#501f00] shadow-lg shadow-[#ff9f6e]/20 active:scale-95 transition-all">
+                        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">send</span>
+                    </button>
+                </div>
+            </form>
+            <div class="px-6 pb-3 flex gap-4 text-[11px] text-[#bfa69a]">
+                <button onclick="fillExample('Tôi đặt hàng 2 tuần rồi mà chưa nhận được, gọi hotline không ai nghe!')" class="hover:text-[#ff9f6e] transition-colors flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">local_shipping</span> Giao hàng trễ
+                </button>
+                <button onclick="fillExample('Sản phẩm nhận được bị lỗi, muốn đổi trả nhưng không biết cách')" class="hover:text-[#ff9f6e] transition-colors flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">swap_horiz</span> Đổi trả sản phẩm
+                </button>
+                <button onclick="fillExample('Bị tính sai tiền 200k, yêu cầu hoàn tiền nhưng shop không trả lời')" class="hover:text-[#ff9f6e] transition-colors flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">payments</span> Hoàn tiền
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- ═══ AGENT TRACE MODAL ═══ -->
+<div id="traceModal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm hidden items-center justify-center" onclick="closeTrace(event)">
+    <div class="bg-[#2b1913] border border-[#594334]/20 rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto shadow-2xl" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-primary flex items-center gap-2">
+                <span class="material-symbols-outlined">psychology</span> EmpathAI Trace
+            </h2>
+            <button onclick="closeTrace()" class="p-2 text-[#bfa69a] hover:text-white transition-colors rounded-lg">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div id="traceContent" class="space-y-4"></div>
+    </div>
+</div>
+
+<!-- Background Ambient Glows -->
+<div class="fixed top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full -z-10 pointer-events-none"></div>
+<div class="fixed bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-secondary/5 blur-[120px] rounded-full -z-10 pointer-events-none"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
