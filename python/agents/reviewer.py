@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from agents.llm_client import groq_complete, kaggle_complete, GROQ_MODEL_SMART
+from agents.llm_client import groq_complete, vertex_custom_complete, GROQ_MODEL_FAST
 from config import EMPATHY_MODE
 from utils.console import console
 
@@ -82,19 +82,32 @@ async def review(question, answer, evidence):
         f"POLICY CONTEXT:\n{evidence[:2000]}\n\n"
         f"Check and respond in JSON:"
     )
+    messages = [
+        {"role": "system", "content": REVIEWER_SYSTEM_PROMPT},
+        {"role": "user", "content": user_prompt},
+    ]
 
-    if EMPATHY_MODE == "kaggle":
-        response = await kaggle_complete(
-            prompt=user_prompt,
-            system_prompt=REVIEWER_SYSTEM_PROMPT,
-            max_tokens=512,
-            temperature=0.0,
-        )
+    if EMPATHY_MODE == "vertex":
+        try:
+            response = await vertex_custom_complete(
+                messages=messages,
+                max_tokens=512,
+                temperature=0.0,
+            )
+        except Exception as e:
+            print(f"Vertex AI reviewer error: {e}, falling back to Groq")
+            response = await groq_complete(
+                prompt=user_prompt,
+                system_prompt=REVIEWER_SYSTEM_PROMPT,
+                model=GROQ_MODEL_FAST,
+                max_tokens=512,
+                temperature=0.0,
+            )
     else:
         response = await groq_complete(
             prompt=user_prompt,
             system_prompt=REVIEWER_SYSTEM_PROMPT,
-            model=GROQ_MODEL_SMART,
+            model=GROQ_MODEL_FAST,
             max_tokens=512,
             temperature=0.0,
         )
@@ -141,17 +154,31 @@ async def review_with_retry(question, answer, evidence):
             f"KHÔNG dùng văn mẫu, phải tự nhiên như người thật nhắn tin."
         )
 
-        if EMPATHY_MODE == "kaggle":
-            current_answer = await kaggle_complete(
-                prompt=retry_prompt,
-                system_prompt="Bạn là EmpathAI. Viết phản hồi thấu cảm, tự nhiên.",
-                temperature=0.7,
-            )
+        retry_messages = [
+            {"role": "system", "content": "Bạn là EmpathAI. Viết phản hồi thấu cảm, tự nhiên."},
+            {"role": "user", "content": retry_prompt},
+        ]
+        
+        if EMPATHY_MODE == "vertex":
+            try:
+                current_answer = await vertex_custom_complete(
+                    messages=retry_messages,
+                    max_tokens=512,
+                    temperature=0.7,
+                )
+            except Exception as e:
+                print(f"Vertex AI retry error: {e}, falling back to Groq")
+                current_answer = await groq_complete(
+                    prompt=retry_prompt,
+                    system_prompt="Bạn là EmpathAI. Viết phản hồi thấu cảm, tự nhiên.",
+                    model=GROQ_MODEL_FAST,
+                    temperature=0.7,
+                )
         else:
             current_answer = await groq_complete(
                 prompt=retry_prompt,
                 system_prompt="Bạn là EmpathAI. Viết phản hồi thấu cảm, tự nhiên.",
-                model=GROQ_MODEL_SMART,
+                model=GROQ_MODEL_FAST,
                 temperature=0.7,
             )
         retry_count += 1

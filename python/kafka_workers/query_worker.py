@@ -39,6 +39,9 @@ from kafka_workers.kafka_config import (
     serialize, deserialize,
 )
 from agents.graph import run_streaming
+from retrieval.cache import get_cached_answer, set_cached_answer
+
+PIPELINE_TIMEOUT_SECONDS = 120  # Max 2 phút cho một request
 
 console = Console(force_terminal=True, safe_box=True)
 running = True
@@ -113,7 +116,6 @@ def run_worker():
             )
 
             # ── Check Redis Cache FIRST ──
-            from retrieval.cache import get_cached_answer, set_cached_answer
             cached = get_cached_answer(question)
             if cached:
                 # CACHE HIT → bypass toàn bộ LangGraph, trả kết quả ngay (<50ms)
@@ -167,13 +169,16 @@ def run_worker():
 
             stream_cb = make_stream_callback(session_id, producer)
 
-            # Run LangGraph pipeline
+            # Run LangGraph pipeline (timeout 2 phút)
             final_state = loop.run_until_complete(
-                run_streaming(
-                    question=question,
-                    history=history,
-                    session_id=session_id,
-                    stream_callback=stream_cb,
+                asyncio.wait_for(
+                    run_streaming(
+                        question=question,
+                        history=history,
+                        session_id=session_id,
+                        stream_callback=stream_cb,
+                    ),
+                    timeout=PIPELINE_TIMEOUT_SECONDS,
                 )
             )
 

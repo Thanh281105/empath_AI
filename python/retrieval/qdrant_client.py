@@ -1,5 +1,5 @@
 """
-Qdrant client wrapper cho hệ thống Cross-lingual ArXiv RAG.
+Qdrant client wrapper cho hệ thống EmpathAI CSKH.
 Quản lý collection, upsert, và search trên Qdrant vector database.
 """
 import uuid
@@ -200,6 +200,10 @@ class QdrantWrapper:
                 "policy_id": r.payload.get("metadata", {}).get("policy_id", ""),
                 "category": r.payload.get("metadata", {}).get("category", ""),
                 "url": r.payload.get("metadata", {}).get("url", ""),
+                "compensation_limit": (
+                    r.payload.get("compensation_limit")
+                    or r.payload.get("metadata", {}).get("compensation_limit", 0)
+                ),
             }
             for r in results.points
         ]
@@ -227,6 +231,10 @@ class QdrantWrapper:
                 "policy_id": r.payload.get("metadata", {}).get("policy_id", ""),
                 "category": r.payload.get("metadata", {}).get("category", ""),
                 "url": r.payload.get("metadata", {}).get("url", ""),
+                "compensation_limit": (
+                    r.payload.get("compensation_limit")
+                    or r.payload.get("metadata", {}).get("compensation_limit", 0)
+                ),
             }
             for r in results.points
         ]

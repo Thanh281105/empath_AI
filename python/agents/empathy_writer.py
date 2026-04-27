@@ -1,6 +1,6 @@
 """
 Empathy Writer — Sinh phản hồi thấu cảm cho khách hàng.
-Dual backend: Groq (fallback) + Kaggle fine-tuned model (primary).
+Dual backend: Vertex AI fine-tuned Llama 3.1-8B (primary) + Groq Llama 3.1-8B (fallback).
 """
 import sys
 from pathlib import Path
@@ -10,8 +10,8 @@ from typing import AsyncGenerator, Callable, Awaitable, Optional
 
 from agents.llm_client import (
     groq_complete, groq_stream_complete,
-    kaggle_complete, kaggle_stream_complete,
-    GROQ_MODEL_SMART, GROQ_MODEL_FAST,
+    vertex_custom_complete,
+    GROQ_MODEL_FAST,
 )
 from config import EMPATHY_MODE
 
@@ -60,7 +60,7 @@ INQUIRY_SYSTEM_PROMPT = (
 )
 
 
-def _build_empathy_prompt(question, evidence_text, sentiment="", score=0):
+def _build_empathy_prompt(question, evidence_text, sentiment="", score=0, compensation=""):
     """Build prompt cho empathy response."""
     sentiment_context = ""
     if sentiment:
@@ -72,17 +72,23 @@ def _build_empathy_prompt(question, evidence_text, sentiment="", score=0):
         }
         sentiment_context = f"\nMỨC ĐỘ CẢM XÚC: {sentiment} (score: {score})\nHƯỚNG DẪN: {sentiment_guide.get(sentiment, '')}\n"
 
+    compensation_context = ""
+    if compensation:
+        compensation_context = f"\nBỒI THƯỜNG ÁP DỤNG: {compensation}\nHÃY ĐỀ XUẤT BỒI THƯỜNG CỤ THỂ NÀY CHO KHÁCH.\n"
+
     if not evidence_text or len(evidence_text) < 30:
         return (
             f"KHÁCH HÀNG GỬI:\n{question}\n\n"
-            f"{sentiment_context}\n"
+            f"{sentiment_context}"
+            f"{compensation_context}\n"
             f"CHÍNH SÁCH: Không tìm thấy chính sách cụ thể. "
             f"Hãy xử lý linh hoạt, thấu cảm và đề nghị chuyển lên cấp trên nếu cần."
         )
 
     return (
         f"KHÁCH HÀNG GỬI:\n{question}\n\n"
-        f"{sentiment_context}\n"
+        f"{sentiment_context}"
+        f"{compensation_context}\n"
         f"CHÍNH SÁCH ÁP DỤNG:\n{evidence_text[:4000]}\n\n"
         f"Hãy phản hồi khách hàng bằng cách thấu cảm + đề xuất giải pháp cụ thể dựa trên chính sách."
     )
@@ -92,21 +98,25 @@ async def generate_empathy_response(question, evidence_text, sentiment="", score
     """Non-streaming empathy response."""
     prompt = _build_empathy_prompt(question, evidence_text, sentiment, score)
 
-    if EMPATHY_MODE == "kaggle":
+    messages = [
+        {"role": "system", "content": EMPATHY_SYSTEM_PROMPT},
+        {"role": "user", "content": prompt},
+    ]
+
+    if EMPATHY_MODE == "vertex":
         try:
-            return await kaggle_complete(
-                prompt=prompt,
-                system_prompt=EMPATHY_SYSTEM_PROMPT,
+            return await vertex_custom_complete(
+                messages=messages,
                 max_tokens=512,
                 temperature=0.7,
             )
-        except Exception:
-            pass  # Fallback to Groq
+        except Exception as e:
+            print(f"Vertex AI error: {e}, falling back to Groq")
 
     return await groq_complete(
         prompt=prompt,
         system_prompt=EMPATHY_SYSTEM_PROMPT,
-        model=GROQ_MODEL_SMART,
+        model=GROQ_MODEL_FAST,
         max_tokens=512,
         temperature=0.7,
     )
@@ -115,53 +125,52 @@ async def generate_empathy_response(question, evidence_text, sentiment="", score
 async def generate_empathy_streaming(
     question, evidence_text,
     sentiment="", score=0,
+    compensation="",
     stream_callback=None,
 ):
     """Streaming empathy response."""
-    prompt = _build_empathy_prompt(question, evidence_text, sentiment, score)
+    prompt = _build_empathy_prompt(question, evidence_text, sentiment, score, compensation)
+    
+    messages = [
+        {"role": "system", "content": EMPATHY_SYSTEM_PROMPT},
+        {"role": "user", "content": prompt},
+    ]
 
     full_answer = ""
     token_buffer = ""
     BUFFER_SIZE = 3
 
-    # Choose backend
-    use_kaggle = EMPATHY_MODE == "kaggle"
-    stream_fn = kaggle_stream_complete if use_kaggle else groq_stream_complete
-
-    kwargs = {
-        "prompt": prompt,
-        "system_prompt": EMPATHY_SYSTEM_PROMPT,
-        "max_tokens": 512,
-        "temperature": 0.7,
-    }
-    if not use_kaggle:
-        kwargs["model"] = GROQ_MODEL_SMART
-
-    try:
-        async for token in stream_fn(**kwargs):
-            full_answer += token
-            token_buffer += token
-
-            if len(token_buffer) >= BUFFER_SIZE or "\n" in token_buffer:
-                if stream_callback:
-                    await stream_callback(token_buffer)
-                token_buffer = ""
-    except Exception:
-        if use_kaggle:
-            # Fallback to Groq
-            async for token in groq_stream_complete(
-                prompt=prompt,
-                system_prompt=EMPATHY_SYSTEM_PROMPT,
-                model=GROQ_MODEL_SMART,
+    if EMPATHY_MODE == "vertex":
+        # Vertex Custom Endpoint không hỗ trợ streaming — simulate bằng word-by-word
+        try:
+            full_answer = await vertex_custom_complete(
+                messages=messages,
                 max_tokens=512,
                 temperature=0.7,
-            ):
-                full_answer += token
-                token_buffer += token
-                if len(token_buffer) >= BUFFER_SIZE or "\n" in token_buffer:
-                    if stream_callback:
-                        await stream_callback(token_buffer)
-                    token_buffer = ""
+            )
+            if stream_callback:
+                words = full_answer.split(" ")
+                for i, word in enumerate(words):
+                    token = word if i == 0 else " " + word
+                    await stream_callback(token)
+            return full_answer
+        except Exception as e:
+            print(f"Vertex AI streaming error: {e}, falling back to Groq")
+
+    # Groq streaming fallback (Llama 3.1-8B)
+    async for token in groq_stream_complete(
+        prompt=prompt,
+        system_prompt=EMPATHY_SYSTEM_PROMPT,
+        model=GROQ_MODEL_FAST,
+        max_tokens=512,
+        temperature=0.7,
+    ):
+        full_answer += token
+        token_buffer += token
+        if len(token_buffer) >= BUFFER_SIZE or "\n" in token_buffer:
+            if stream_callback:
+                await stream_callback(token_buffer)
+            token_buffer = ""
 
     if token_buffer and stream_callback:
         await stream_callback(token_buffer)
@@ -171,13 +180,21 @@ async def generate_empathy_streaming(
 
 async def generate_casual(question):
     """Casual response (không cần RAG)."""
-    if EMPATHY_MODE == "kaggle":
-        return await kaggle_complete(
-            prompt=question,
-            system_prompt=CASUAL_SYSTEM_PROMPT,
-            max_tokens=256,
-            temperature=0.7,
-        )
+    messages = [
+        {"role": "system", "content": CASUAL_SYSTEM_PROMPT},
+        {"role": "user", "content": question},
+    ]
+    
+    if EMPATHY_MODE == "vertex":
+        try:
+            return await vertex_custom_complete(
+                messages=messages,
+                max_tokens=256,
+                temperature=0.7,
+            )
+        except Exception as e:
+            print(f"Vertex AI error: {e}, falling back to Groq")
+    
     return await groq_complete(
         prompt=question,
         system_prompt=CASUAL_SYSTEM_PROMPT,
@@ -194,17 +211,25 @@ async def generate_inquiry(question, evidence_text):
         f"THÔNG TIN:\n{evidence_text[:4000]}\n\n"
         f"Trả lời cụ thể, thân thiện."
     )
-    if EMPATHY_MODE == "kaggle":
-        return await kaggle_complete(
-            prompt=prompt,
-            system_prompt=INQUIRY_SYSTEM_PROMPT,
-            max_tokens=512,
-            temperature=0.3,
-        )
+    messages = [
+        {"role": "system", "content": INQUIRY_SYSTEM_PROMPT},
+        {"role": "user", "content": prompt},
+    ]
+    
+    if EMPATHY_MODE == "vertex":
+        try:
+            return await vertex_custom_complete(
+                messages=messages,
+                max_tokens=512,
+                temperature=0.3,
+            )
+        except Exception as e:
+            print(f"Vertex AI error: {e}, falling back to Groq")
+    
     return await groq_complete(
         prompt=prompt,
         system_prompt=INQUIRY_SYSTEM_PROMPT,
-        model=GROQ_MODEL_SMART,
+        model=GROQ_MODEL_FAST,
         max_tokens=512,
         temperature=0.3,
     )

@@ -31,7 +31,7 @@ from agents.reviewer import needs_review, review_with_retry
 from agents.grader import grade_documents_node
 from agents.rewriter import rewrite_query_node
 from agents.llm_client import observe
-from indexing.query_engine import retrieve_and_rerank, format_evidence
+from indexing.query_engine import retrieve_and_rerank_async, format_evidence
 
 from config import MAX_REWRITE_RETRIES
 from utils.console import console
@@ -74,13 +74,13 @@ async def casual_node(state: AgentState) -> dict:
     }
 
 
-def retrieve_node(state: AgentState) -> dict:
-    """Node: Hybrid Search + Rerank tren policy DB."""
+async def retrieve_node(state: AgentState) -> dict:
+    """Node: Hybrid Search + Rerank tren policy DB (async, non-blocking)."""
     t0 = time.time()
     # Use rewritten query if available, otherwise use original question
     query = state.get("translated_query", state["question"])
 
-    documents = retrieve_and_rerank(query)
+    documents = await retrieve_and_rerank_async(query)
     evidence_text = format_evidence(documents)
 
     elapsed = int((time.time() - t0) * 1000)
@@ -107,6 +107,7 @@ async def empathy_writer_node(state: AgentState) -> dict:
     evidence_text = state.get("evidence_text", "")
     sentiment = state.get("sentiment", "")
     sentiment_score = state.get("sentiment_score", 0)
+    compensation = state.get("compensation", "")
     stream_callback = state.get("stream_callback")
 
     answer = await generate_empathy_streaming(
@@ -114,6 +115,7 @@ async def empathy_writer_node(state: AgentState) -> dict:
         evidence_text=evidence_text,
         sentiment=sentiment,
         score=sentiment_score,
+        compensation=compensation,
         stream_callback=stream_callback,
     )
 

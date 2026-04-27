@@ -32,16 +32,15 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 GROQ_API_KEYS = [k.strip() for k in os.getenv("GROQ_API_KEYS", GROQ_API_KEY).split(",") if k.strip()]
 QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY", "")
+VERTEX_PROJECT_ID = os.getenv("VERTEX_PROJECT_ID", "empathai-494308")
+VERTEX_REGION = os.getenv("VERTEX_REGION", "asia-southeast1")  # Singapore, gần VN nhất
 
 # --- Model Configuration ---
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "BAAI/bge-m3")
 RERANKER_MODEL = os.getenv("RERANKER_MODEL", "BAAI/bge-reranker-v2-m3")
-LLM_MODEL = os.getenv("LLM_MODEL", "llama-3.3-70b-versatile")
 
 # --- EmpathAI Configuration ---
-EMPATHY_MODE = os.getenv("EMPATHY_MODE", "groq")  # "groq" | "kaggle" | "local"
-KAGGLE_INFERENCE_URL = os.getenv("KAGGLE_INFERENCE_URL", "")  # Ngrok URL from Kaggle
-EMPATHY_MODEL_ID = os.getenv("EMPATHY_MODEL_ID", "empathAI-llama3.1-8b")
+EMPATHY_MODE = os.getenv("EMPATHY_MODE", "vertex")  # "vertex" | "groq"
 
 # Sentiment labels
 SENTIMENT_LABELS = ["toxic", "frustrated", "disappointed", "neutral"]
@@ -49,17 +48,9 @@ SENTIMENT_LABELS = ["toxic", "frustrated", "disappointed", "neutral"]
 # --- Kafka Configuration ---
 KAFKA_BROKERS = os.getenv("KAFKA_BROKERS", "localhost:9092")
 
-# --- LangGraph Configuration ---
-LANGGRAPH_MAX_RETRIES = 2
-STREAMING_CHUNK_SIZE = 3
-
 # --- Qdrant Configuration ---
 QDRANT_COLLECTION = os.getenv("QDRANT_COLLECTION", "empathAI_policies")
 EMBEDDING_DIM = 1024  # bge-m3 output dimension
-
-# --- Groq Configuration ---
-GROQ_MAX_TOKENS = 4096
-GROQ_TEMPERATURE = 0.1
 
 # --- Retrieval Configuration ---
 TOP_K_RETRIEVAL = 8

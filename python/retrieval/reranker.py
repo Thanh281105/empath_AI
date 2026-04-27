@@ -47,8 +47,8 @@ def rerank(
     # Tạo cặp (query, doc_text)
     pairs = [(query, doc["text"]) for doc in documents]
     
-    # Chấm điểm
-    scores = reranker.predict(pairs)
+    # Chấm điểm — batch_size=len(pairs) để tránh overhead chia batch không cần thiết
+    scores = reranker.predict(pairs, batch_size=len(pairs))
     
     # Gán điểm vào kết quả
     scored_docs = []
@@ -63,14 +63,11 @@ def rerank(
     # Giữ top_k
     results = scored_docs[:top_k]
     
-    console.print(f"[green]✅ Reranked: giữ {len(results)}/{len(documents)} documents[/]")
-    
-    # Log scores
-    for i, doc in enumerate(results):
-        console.print(
-            f"[dim]  #{i+1} (score={doc['rerank_score']:.4f}): "
-            f"{doc['text'][:60]}...[/]"
-        )
+    console.print(
+        f"[green]✅ Reranked: top {len(results)}/{len(documents)} "
+        f"(best={results[0]['rerank_score']:.4f})[/]" if results else
+        "[yellow]⚠️ Rerank: no results[/]"
+    )
     
     return results
 

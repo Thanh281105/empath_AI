@@ -8,7 +8,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from agents.state import AgentState
-from agents.llm_client import groq_complete, kaggle_complete, GROQ_MODEL_FAST
+from agents.llm_client import groq_complete, vertex_custom_complete, GROQ_MODEL_FAST
 from config import EMPATHY_MODE
 from utils.console import console
 
@@ -54,13 +54,27 @@ async def rewrite_query_node(state: AgentState) -> dict:
         f"Rewrite this query to find the best matching CSKH policy:"
     )
 
-    if EMPATHY_MODE == "kaggle":
-        rewritten = await kaggle_complete(
-            prompt=prompt,
-            system_prompt=REWRITE_SYSTEM_PROMPT,
-            max_tokens=128,
-            temperature=0.3,
-        )
+    messages = [
+        {"role": "system", "content": REWRITE_SYSTEM_PROMPT},
+        {"role": "user", "content": prompt},
+    ]
+    
+    if EMPATHY_MODE == "vertex":
+        try:
+            rewritten = await vertex_custom_complete(
+                messages=messages,
+                max_tokens=128,
+                temperature=0.3,
+            )
+        except Exception as e:
+            print(f"Vertex AI rewrite error: {e}, falling back to Groq")
+            rewritten = await groq_complete(
+                prompt=prompt,
+                system_prompt=REWRITE_SYSTEM_PROMPT,
+                model=GROQ_MODEL_FAST,
+                max_tokens=128,
+                temperature=0.3,
+            )
     else:
         rewritten = await groq_complete(
             prompt=prompt,
