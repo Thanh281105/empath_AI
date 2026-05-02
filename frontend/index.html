@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta name="description" content="EmpathAI - Chuyển hóa phàn nàn thành sự hài lòng bằng Trí thông minh cảm xúc"/>
+    <title>Empath AI - Welcome</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#dfdfe1",
+                    "surface-container-low": "#f4f3f8",
+                    "on-secondary-container": "#616365",
+                    "tertiary": "#5d5f5f",
+                    "error-container": "#ffdad6",
+                    "on-surface-variant": "#524535",
+                    "secondary-fixed-dim": "#c6c6c8",
+                    "primary-fixed-dim": "#ffb95a",
+                    "secondary": "#5d5e60",
+                    "on-surface": "#1a1b1f",
+                    "on-error": "#ffffff",
+                    "on-tertiary-fixed": "#1a1c1c",
+                    "on-primary-container": "#704700",
+                    "on-primary-fixed": "#2a1800",
+                    "primary-container": "#ffb347",
+                    "tertiary-container": "#c1c2c2",
+                    "surface-variant": "#e3e2e7",
+                    "on-primary": "#ffffff",
+                    "inverse-surface": "#2f3034",
+                    "inverse-primary": "#ffb95a",
+                    "surface-bright": "#faf8fe",
+                    "outline": "#847463",
+                    "surface-dim": "#dad9df",
+                    "on-secondary-fixed-variant": "#454749",
+                    "background": "#faf8fe",
+                    "surface-container-high": "#e9e7ed",
+                    "inverse-on-surface": "#f1f0f5",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#e2e2e2",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#e2e2e4",
+                    "outline-variant": "#d6c3b0",
+                    "tertiary-fixed-dim": "#c6c6c7",
+                    "surface-container-highest": "#e3e2e7",
+                    "surface-container": "#eeedf3",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-container": "#4e5050",
+                    "surface-tint": "#845400",
+                    "primary": "#845400",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#ffddb6",
+                    "on-secondary-fixed": "#1a1c1d",
+                    "on-tertiary-fixed-variant": "#454747",
+                    "on-secondary": "#ffffff",
+                    "on-background": "#1a1b1f",
+                    "surface": "#faf8fe",
+                    "on-primary-fixed-variant": "#643f00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-padding": "32px",
+                    "xl": "64px",
+                    "lg": "40px",
+                    "md": "24px",
+                    "sm": "16px",
+                    "xs": "8px",
+                    "gutter": "20px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "h2": ["Inter"],
+                    "button": ["Inter"],
+                    "h1": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "h2": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "button": ["16px", {"lineHeight": "1.0", "letterSpacing": "0", "fontWeight": "500"}],
+                    "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["15px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                    "body-lg": ["17px", {"lineHeight": "1.5", "letterSpacing": "-0.01em", "fontWeight": "400"}]
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+        }
+        .glass-card {
+            background: #fff;
+            box-shadow: 0 10px 40px rgba(132, 84, 0, 0.04);
+        }
+        .bg-img-blur {
+            position: absolute;
+            top: -20%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            z-index: -1;
+            opacity: 0.15;
+            background-image: url(https://lh3.googleusercontent.com/aida/ADBb0uhRHmfFKSXuHwgLpKNIVx-cnN_Ro9SF0P2Q6YmMjZ_Q7ZuqIPVvehWAnUvva683nwinSgMhZY3HMQ8qlSMj4KRtHG0AaxlKjcQkdiqsyq2wxndrymv6W3GkRDY_ssaHaCqiLOQVyY-dIrKwCi1yvyObzGOOsGBDLif_mL-qSyNP4B9rO6K1V0Q6uXDMUn9iAqZFo0TB6Gq0RrYpNIB4-ceTZ1g8EiRCXwieLBou94HrxnODLOupp4LDdugHSGmUHWV6S89IAILfVQ);
+            background-size: cover;
+            background-position: center;
+            filter: blur(80px);
+        }
+        .no-scrollbar::-webkit-scrollbar { display:none; }
+        .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+        #chatCanvas { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md h-[100dvh] w-full flex overflow-hidden relative">
+    <!-- Ambient Background Blur -->
+    <div class="bg-img-blur" data-alt="Abstract, highly diffused soft amber and porcelain light blooms representing calm AI intelligence, blurred dramatically to create an ethereal background atmosphere in a humanist minimalist UI context."></div>
+
+    <!-- Top Navigation (Mobile/Tablet) -->
+    <nav class="md:hidden flex justify-between items-center w-full px-8 h-16 fixed top-0 z-50 bg-white/70 backdrop-blur-[20px] shadow-[0_10px_40px_rgba(0,0,0,0.04)] font-['Inter'] text-slate-800 tracking-tight">
+        <div class="text-xl font-medium text-slate-900 cursor-pointer" onclick="newResearch()">Empath AI</div>
+        <div class="flex items-center gap-4">
+            <div id="topNavStatusMobile" class="flex items-center gap-1 bg-surface-container rounded-full px-3 py-1.5" title="System Online">
+                <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 hover:bg-white/50 transition-colors cursor-pointer rounded-full p-2 active:scale-95 duration-200 ease-out" onclick="toggleHistoryDrawer()">history</span>
+        </div>
+    </nav>
+
+    <!-- Side Navigation (Web) -->
+    <aside class="hidden md:flex fixed left-0 top-0 h-screen flex-col items-center py-8 z-40 bg-white/60 backdrop-blur-[20px] h-[calc(100vh-2rem)] w-20 m-4 rounded-[20px] shadow-[0_10px_40px_rgba(0,0,0,0.04)] font-['Inter'] text-xs font-medium">
+        <div class="flex-1 flex flex-col items-center gap-8 mt-4 w-full">
+            <!-- Active Tab: Chat -->
+            <div onclick="newResearch()" class="flex flex-col items-center gap-1 cursor-pointer w-full text-primary bg-primary-container/20 rounded-xl p-3 hover:scale-110 duration-300" title="New Chat">
+                <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+                <span>Chat</span>
+            </div>
+            <!-- History Tab -->
+            <div onclick="toggleHistoryDrawer()" class="flex flex-col items-center gap-1 cursor-pointer w-full text-on-surface-variant/70 hover:text-primary transition-all p-3 hover:scale-110 duration-300" title="History">
+                <span class="material-symbols-outlined text-2xl">history</span>
+                <span>History</span>
+            </div>
+        </div>
+        
+        <!-- Status Indicator -->
+        <div id="topNavStatus" class="flex flex-col items-center gap-1 mb-6 text-tertiary animate-pulse" title="System Online">
+            <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+            <span class="text-[9px] uppercase tracking-wider font-bold">Online</span>
+        </div>
+    </aside>
+
+    <!-- History Drawer (Slide Out) -->
+    <div id="historyDrawer" class="fixed left-0 md:left-28 top-0 h-screen w-full md:w-80 bg-white/90 backdrop-blur-[40px] shadow-[10px_0_40px_rgba(0,0,0,0.05)] border-r border-outline-variant/20 z-30 transform -translate-x-full transition-transform duration-300 ease-[cubic-bezier(0.4,0.0,0.2,1)] pt-20 md:pt-8 px-6 pb-8 flex flex-col">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-on-surface tracking-tight">Lịch sử</h2>
+            <button onclick="toggleHistoryDrawer()" class="p-2 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div id="sessionList" class="flex-1 overflow-y-auto space-y-2 no-scrollbar">
+            <!-- App.js injects sessions here -->
+        </div>
+    </div>
+    <script>
+        // Custom History Drawer slide logic
+        window.toggleHistoryDrawer = function() {
+            const drawer = document.getElementById('historyDrawer');
+            if(drawer.classList.contains('-translate-x-full')) {
+                drawer.classList.remove('-translate-x-full');
+                if (typeof loadSessions === 'function') loadSessions();
+            } else {
+                drawer.classList.add('-translate-x-full');
+            }
+        };
+    </script>
+
+    <!-- Main Content Canvas -->
+    <main id="chatCanvas" class="flex-1 ml-0 md:ml-28 p-container-padding flex flex-col items-center h-full relative overflow-y-auto pb-48 pt-20 md:pt-12 no-scrollbar">
+        
+        <div class="w-full max-w-4xl flex flex-col items-center">
+            
+            <!-- Welcome View -->
+            <div id="welcomeView" class="w-full flex flex-col items-center pt-8 transition-opacity duration-500">
+                <!-- Hero Section -->
+                <div class="text-center max-w-3xl mb-xl z-10">
+                    <h1 class="font-h1 text-h1 text-on-surface mb-sm tracking-tight">Xin chào, mình là <span class="text-primary">EmpathAI</span></h1>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Trợ lý CSKH thấu cảm — Chuyển hóa phàn nàn thành sự hài lòng bằng Trí thông minh cảm xúc.</p>
+                </div>
+                
+                <!-- Feature Grid (Bento Style) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-md w-full max-w-4xl z-10">
+                    <div class="glass-card rounded-2xl p-md flex flex-col gap-sm border border-outline-variant/20 hover:border-primary/30 transition-all group">
+                        <div class="w-12 h-12 rounded-full bg-primary-container/30 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">psychology</span>
+                        </div>
+                        <div>
+                            <h3 class="font-h2 text-body-lg font-semibold text-on-surface mb-1">Emotional Analysis</h3>
+                            <p class="font-body-md text-sm text-on-surface-variant/80 leading-relaxed">Nhận diện cảm xúc theo thời gian thực để điều chỉnh tông giọng và xoa dịu căng thẳng tự nhiên.</p>
+                        </div>
+                    </div>
+                    <div class="glass-card rounded-2xl p-md flex flex-col gap-sm border border-outline-variant/20 hover:border-primary/30 transition-all group">
+                        <div class="w-12 h-12 rounded-full bg-primary-container/30 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                        </div>
+                        <div>
+                            <h3 class="font-h2 text-body-lg font-semibold text-on-surface mb-1">Instant Response</h3>
+                            <p class="font-body-md text-sm text-on-surface-variant/80 leading-relaxed">Phản hồi tức thì với tốc độ siêu tốc, tạo cảm giác giao tiếp trơn tru như người thật.</p>
+                        </div>
+                    </div>
+                    <div class="glass-card rounded-2xl p-md flex flex-col gap-sm border border-outline-variant/20 hover:border-primary/30 transition-all group">
+                        <div class="w-12 h-12 rounded-full bg-primary-container/30 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+                        </div>
+                        <div>
+                            <h3 class="font-h2 text-body-lg font-semibold text-on-surface mb-1">Policy Integration</h3>
+                            <p class="font-body-md text-sm text-on-surface-variant/80 leading-relaxed">Tuân thủ chặt chẽ chính sách công ty đồng thời đề xuất giải pháp bồi thường linh hoạt.</p>
+                        </div>
+                    </div>
+                    <div class="glass-card rounded-2xl p-md flex flex-col gap-sm border border-outline-variant/20 hover:border-primary/30 transition-all group">
+                        <div class="w-12 h-12 rounded-full bg-primary-container/30 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">account_tree</span>
+                        </div>
+                        <div>
+                            <h3 class="font-h2 text-body-lg font-semibold text-on-surface mb-1">Smart Logic</h3>
+                            <p class="font-body-md text-sm text-on-surface-variant/80 leading-relaxed">Luồng Agentic RAG thông minh: Router -> Retriever -> Grader -> Writer -> Reviewer.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Area (Hidden until chat starts) -->
+            <div id="messagesArea" class="hidden w-full space-y-8 pb-8 flex flex-col mt-4 md:mt-8"></div>
+            
+        </div>
+        
+    </main>
+
+    <!-- Floating Input Bar -->
+    <div class="fixed bottom-lg left-0 w-full px-container-padding flex justify-center z-50 pointer-events-none md:pl-28">
+        <div class="w-full max-w-3xl flex flex-col gap-3 pointer-events-auto">
+            <form id="queryForm" onsubmit="handleSubmit(event)" class="w-full glass-panel rounded-full p-2 pl-6 flex items-center gap-4 border border-white/80 shadow-[0_10px_40px_rgba(132,84,0,0.08)] focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/30 transition-all">
+                <div class="relative flex items-center border-r border-outline-variant/30 pr-3">
+                    <select id="modelSelect" class="bg-transparent text-primary text-xs font-bold uppercase tracking-wider py-1 pl-1 pr-6 focus:outline-none cursor-pointer appearance-none">
+                        <option class="text-on-surface bg-surface-container-lowest" value="empath">EmpathAI (Full)</option>
+                        <option class="text-on-surface bg-surface-container-lowest" value="req1">LLM Only</option>
+                        <option class="text-on-surface bg-surface-container-lowest" value="req2">LLM Fine-tune</option>
+                        <option class="text-on-surface bg-surface-container-lowest" value="req3">LLM + RAG</option>
+                        <option class="text-on-surface bg-surface-container-lowest" value="compare">So sánh 4</option>
+                    </select>
+                    <span class="material-symbols-outlined text-primary text-[16px] absolute right-1 pointer-events-none">expand_more</span>
+                </div>
+                
+                <input id="queryInput" class="flex-1 bg-transparent border-none focus:ring-0 font-body-md text-on-surface placeholder:text-on-surface-variant/50 outline-none h-10" placeholder="Hỏi EmpathAI điều gì đó..." type="text" autocomplete="off"/>
+                
+                <button id="submitBtn" type="submit" class="bg-primary-container text-on-primary-container w-12 h-12 rounded-full flex items-center justify-center hover:bg-primary-fixed hover:scale-105 transition-all shadow-md active:scale-95">
+                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">arrow_upward</span>
+                </button>
+            </form>
+            
+            <!-- Quick Suggestions -->
+            <div class="flex justify-center gap-6 text-xs text-on-surface-variant/80 font-medium hidden md:flex">
+                <button type="button" onclick="fillExample('Giao hàng trễ quá, tôi muốn hủy đơn')" class="hover:text-primary transition-colors flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">local_shipping</span> Giao hàng trễ</button>
+                <button type="button" onclick="fillExample('Sản phẩm nhận được bị lỗi, xử lý sao đây?')" class="hover:text-primary transition-colors flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">swap_horiz</span> Đổi trả hàng</button>
+                <button type="button" onclick="fillExample('Thái độ nhân viên vô cùng tệ, yêu cầu hoàn tiền!')" class="hover:text-primary transition-colors flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">payments</span> Phàn nàn gay gắt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Agent Trace Modal -->
+    <div id="traceModal" class="fixed inset-0 z-[100] bg-black/20 backdrop-blur-md hidden items-center justify-center" onclick="closeTrace(event)">
+        <div class="glass-card rounded-3xl p-8 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto shadow-2xl border border-white" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-bold text-primary flex items-center gap-3">
+                    <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">psychology</span> 
+                    EmpathAI Trace
+                </h2>
+                <button onclick="closeTrace()" class="p-2 bg-surface-variant text-on-surface-variant hover:bg-error-container hover:text-error transition-colors rounded-full flex items-center justify-center">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div id="traceContent" class="space-y-4"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
