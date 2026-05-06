@@ -29,24 +29,25 @@ def plot_results(csv_path=None):
     sns.set_theme(style="whitegrid")
 
     # ==========================================
-    # 1. Biểu đồ chất lượng ngôn ngữ (BLEU, ROUGE, BERTScore)
+    # 1. Biểu đồ chất lượng ngôn ngữ và truy xuất (BLEU, ROUGE, BERTScore, Recall@5)
     # ==========================================
-    metrics = ['BLEU', 'ROUGE-L', 'BERTScore']
+    metrics = ['BLEU', 'ROUGE-L', 'BERTScore', 'Recall@5']
     df_metrics = df.melt(id_vars='Architecture', value_vars=metrics, var_name='Metric', value_name='Score')
     # Chuyển đổi sang số, những chữ 'N/A' hoặc 'None' sẽ thành NaN
     df_metrics['Score'] = pd.to_numeric(df_metrics['Score'], errors='coerce')
 
     plt.figure(figsize=(12, 6))
     ax = sns.barplot(data=df_metrics, x='Metric', y='Score', hue='Architecture', palette='viridis')
-    plt.title('So sánh Chất lượng Phản hồi (BLEU, ROUGE-L, BERTScore)', fontsize=15, pad=15, fontweight='bold')
+    plt.title('So sánh Chất lượng Phản hồi & Truy xuất (BLEU, ROUGE-L, BERTScore, Recall@5)', fontsize=15, pad=15, fontweight='bold')
     plt.ylim(0, max(df_metrics['Score'].max() + 10, 100)) # Mở rộng trục Y
     plt.ylabel('Điểm (0-100)', fontsize=12)
     plt.xlabel('Chỉ số đánh giá', fontsize=12)
     plt.legend(title='Kiến trúc (Model)', bbox_to_anchor=(1.05, 1), loc='upper left')
     
-    # Hiển thị số liệu trực tiếp trên từng cột bar
+    # Hiển thị số liệu trực tiếp trên từng cột bar, bỏ qua NaN (ví dụ: mô hình không có RAG)
     for container in ax.containers:
-        ax.bar_label(container, fmt='%.1f', padding=3, fontsize=10)
+        labels = [f"{v.get_height():.1f}" if pd.notna(v.get_height()) and v.get_height() > 0 else "" for v in container]
+        ax.bar_label(container, labels=labels, padding=3, fontsize=10)
 
     plt.tight_layout()
     out_path1 = "evaluation/results/plot_quality.png"

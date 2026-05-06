@@ -65,3 +65,6 @@ rust_backend/target/
 target/
 debug/
 release/
+
+# Pdf files
+*.pdf
