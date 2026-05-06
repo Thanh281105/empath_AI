@@ -58,6 +58,31 @@ graph TD
 
 ---
 
+### 📊 So sánh 4 Kiến trúc (Evaluation Architecture)
+
+```mermaid
+flowchart TD
+    subgraph Req 1 [Req 1: Base LLM]
+        Q1[Question] --> LLM1(Groq Base LLM) --> A1[Answer]
+    end
+    
+    subgraph Req 2 [Req 2: Fine-Tuned LLM]
+        Q2[Question] --> LLM2(Vertex AI Fine-tuned) --> A2[Answer]
+    end
+    
+    subgraph Req 3 [Req 3: Base LLM + RAG]
+        Q3[Question] --> RAG3[(Qdrant RAG)] --> LLM3(Groq Base LLM) --> A3[Answer]
+    end
+    
+    subgraph Req 4 [Req 4: Agentic RAG + Fine-Tuned]
+        Q4[Question] --> MAS{LangGraph Agents}
+        MAS <--> RAG4[(Qdrant RAG)]
+        MAS --> LLM4(Vertex AI Fine-tuned) --> A4[Answer]
+    end
+```
+
+---
+
 ## 🏗️ Công nghệ cốt lõi (Tech Stack)
 
 | Thành phần | Công nghệ | Vai trò |
